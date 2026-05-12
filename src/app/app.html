@@ -1,25 +1,7 @@
 <div class="main">
   <h1>Mozilla Dev - My To Do List</h1>
 
-  <!-- ===== TELA PRINCIPAL (usuário logado) ===== -->
-  <div *ngIf="usuarioLogado()">
-    <input class="lg-text-input" #campoNovoItem />
-    <button class="btn-primary" (click)="CREATE_tarefa(campoNovoItem.value)">
-      Adicionar Tarefa
-    </button>
-
-    <ul>
-      <li *ngFor="let tarefaDoLoop of arrayDeTarefas()">
-        <app-item
-          [tarefa]="tarefaDoLoop"
-          (removeTarefa)="DELETE_tarefa(tarefaDoLoop)"
-          (modificaTarefa)="UPDATE_tarefa($event)">
-        </app-item>
-      </li>
-    </ul>
-  </div>
-
-  <!-- ===== TELA DE LOGIN (usuário não logado) ===== -->
+  <!-- ===== TELA DE LOGIN ===== -->
   <div *ngIf="!usuarioLogado()">
     <input #username placeholder="nome" class="lg-text-input" />
     <br />
@@ -27,5 +9,91 @@
     <button class="btn-primary" (click)="login(username.value, password.value)">
       Login
     </button>
+  </div>
+
+  <!-- ===== TELA PRINCIPAL (logado) ===== -->
+  <div *ngIf="usuarioLogado()">
+
+    <!-- ABAS -->
+    <div style="display:flex; gap:8px; margin-bottom:1rem;">
+      <button class="btn-primary" (click)="mudarAba('tarefas')"
+        [style.background-color]="abaAtiva() === 'tarefas' ? '#000' : '#888'">
+        Tarefas
+      </button>
+      <button *ngIf="isAdmin()" class="btn-primary" (click)="mudarAba('usuarios')"
+        [style.background-color]="abaAtiva() === 'usuarios' ? '#000' : '#888'">
+        Usuários
+      </button>
+    </div>
+
+    <!-- ===== ABA TAREFAS ===== -->
+    <div *ngIf="abaAtiva() === 'tarefas'">
+      <input class="lg-text-input" #campoNovoItem />
+      <button class="btn-primary" (click)="CREATE_tarefa(campoNovoItem.value)">
+        Adicionar Tarefa
+      </button>
+      <ul>
+        <li *ngFor="let tarefaDoLoop of arrayDeTarefas()">
+          <app-item
+            [tarefa]="tarefaDoLoop"
+            (removeTarefa)="DELETE_tarefa(tarefaDoLoop)"
+            (modificaTarefa)="UPDATE_tarefa($event)">
+          </app-item>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== ABA USUÁRIOS (só admin) ===== -->
+    <div *ngIf="abaAtiva() === 'usuarios' && isAdmin()">
+
+      <!-- Formulário criar usuário -->
+      <div style="margin-bottom:1rem;">
+        <h3>Criar novo usuário</h3>
+        <input class="lg-text-input" placeholder="Nome" [(ngModel)]="novoUserNome" />
+        <input class="lg-text-input" placeholder="Senha" type="password" [(ngModel)]="novoUserSenha" />
+        <label style="display:flex; align-items:center; gap:8px; margin: 0.5rem 0;">
+          <input type="checkbox" [(ngModel)]="novoUserIsAdmin" /> É admin?
+        </label>
+        <button class="btn-primary" (click)="CREATE_usuario()">Criar Usuário</button>
+      </div>
+
+      <!-- Lista de usuários -->
+      <h3>Usuários cadastrados</h3>
+      <ul style="padding:0;">
+        <li *ngFor="let user of arrayDeUsuarios()"
+            style="list-style:none; border:1px solid #ccc; padding:0.75rem; margin-bottom:0.5rem; border-radius:4px;">
+
+          <!-- Modo visualização -->
+          <div *ngIf="!editandoUser || editandoUser._id !== user._id"
+               style="display:flex; justify-content:space-between; align-items:center;">
+            <span>
+              <strong>{{ user.nome }}</strong>
+              <span *ngIf="user.isAdmin" style="color:green; margin-left:8px;">[admin]</span>
+            </span>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-primary" (click)="iniciarEdicao(user)"
+                style="padding:0.3rem 0.75rem; font-size:0.85rem;">Editar</button>
+              <button class="btn-primary" (click)="DELETE_usuario(user)"
+                style="padding:0.3rem 0.75rem; font-size:0.85rem; background:#c0392b;">Remover</button>
+            </div>
+          </div>
+
+          <!-- Modo edição -->
+          <div *ngIf="editandoUser && editandoUser._id === user._id">
+            <input class="lg-text-input" placeholder="Nome" [(ngModel)]="editandoUser.nome" />
+            <input class="lg-text-input" placeholder="Nova senha (deixe vazio para manter)" type="password" [(ngModel)]="editandoUser.novaSenha" />
+            <label style="display:flex; align-items:center; gap:8px; margin: 0.5rem 0;">
+              <input type="checkbox" [(ngModel)]="editandoUser.isAdmin" /> É admin?
+            </label>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-primary" (click)="UPDATE_usuario()">Salvar</button>
+              <button class="btn-primary" (click)="cancelarEdicao()"
+                style="background:#888;">Cancelar</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
   </div>
 </div>
