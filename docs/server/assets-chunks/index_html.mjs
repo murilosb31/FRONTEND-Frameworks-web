@@ -1,7 +1,7 @@
 export default `<!DOCTYPE html><html lang="en" data-beasties-container><head>
   <meta charset="utf-8">
   <title>TODOapp</title>
-  <base href="/FRONTEND-Frameworks-web/">
+  <base href="/FRONTEND-Frameworks-web/browser/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>body{font-family:Helvetica,Arial,sans-serif}.btn-primary{color:#fff;background-color:#000;width:100%;padding:.75rem;font-size:1.3rem;border:black solid 2px;margin:1rem 0}.btn-primary:hover{background-color:#444242}.btn-primary:focus{color:#000;outline:none;border:#000 solid 2px;background-color:#d7ecff}.btn-primary:active{background-color:#212020}

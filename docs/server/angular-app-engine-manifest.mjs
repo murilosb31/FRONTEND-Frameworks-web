@@ -1,6 +1,6 @@
 
 export default {
-  basePath: '/FRONTEND-Frameworks-web',
+  basePath: '/FRONTEND-Frameworks-web/browser',
   allowedHosts: [],
   supportedLocales: {
   "en-US": ""
